@@ -1,0 +1,34 @@
+# --- Python Virtual Environment ---
+venv/
+.venv/
+env/
+ENV/
+
+# --- Python Build/Bytecode ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# --- PySide6 / Qt ---
+# Ignore generated UI files if you use Qt Designer/pyside6-uic
+*_ui.py
+# If you use Qt Resources (qrc files)
+*_rc.py
+
+# --- IDE/Editor Settings ---
+# PyCharm/JetBrains
+.idea/
+# VS Code
+.vscode/
+*.code-workspace
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+
+# --- Project Folder ---
+data/output/*
+data/logs/*
