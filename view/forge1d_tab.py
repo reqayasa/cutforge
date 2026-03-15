@@ -29,8 +29,8 @@ class Forge1DTab(QWidget):
         input_group = QGroupBox("Input Files")
         input_layout = QGridLayout()
 
-        self.stock_path = QLineEdit("data/input/stocks.csv")
-        self.demand_path = QLineEdit("data/input/demand.csv")
+        self.stock_path = QLineEdit("data/input/forge1d_stocks.csv")
+        self.demand_path = QLineEdit("data/input/forge1d_demand.csv")
 
         stock_btn = QPushButton("Browse")
         stock_btn.clicked.connect(self.browse_stock)
@@ -153,8 +153,4 @@ class Forge1DTab(QWidget):
                     j,
                     QTableWidgetItem(str(df.iloc[i, j]))
             )
-
-
-
-
-
+        
