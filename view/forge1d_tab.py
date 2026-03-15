@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 from PySide6.QtWidgets import (
     QWidget, 
@@ -17,10 +18,18 @@ from PySide6.QtWidgets import (
     QTextEdit,
 )
 
+
 class Forge1DTab(QWidget):
     def __init__(self):
         super().__init__()
+
+        self.logger = logging.getLogger("cutforge")
+
         self.init_ui()
+
+        self.load_csv_preview(self.preview_table_stock, self.stock_path.text())
+        self.load_csv_preview(self.preview_table_demand, self.demand_path.text())
+
 
     def init_ui(self):
         layout = QVBoxLayout()
@@ -48,33 +57,35 @@ class Forge1DTab(QWidget):
         input_group.setLayout(input_layout)
 
         # --- OPTIONS GROUP---
-        option_group = QGroupBox()
-        option_layout = QHBoxLayout()
+        # option_group = QGroupBox()
+        # option_layout = QHBoxLayout()
 
-        self.kerf_check = QCheckBox("Use Kerf")
-        self.kerf_value = QDoubleSpinBox()
-        self.kerf_value.setValue(3.0)
-        self.kerf_value.setMaximum(100)
+        # self.kerf_check = QCheckBox("Use Kerf")
+        # self.kerf_value = QDoubleSpinBox()
+        # self.kerf_value.setValue(3.0)
+        # self.kerf_value.setMaximum(100)
 
         self.algorithm = QComboBox()
         self.algorithm.addItem("FFD", "BFG", "Column Generation")
 
-        option_layout.addWidget(self.kerf_check)
-        option_layout.addWidget(QLabel("Kerf"))
-        option_layout.addWidget(self.kerf_value)
-        option_layout.addSpacing(20)
-        option_layout.addWidget(QLabel("Algorithm"))
-        option_layout.addWidget(self.algorithm)
+        # option_layout.addWidget(self.kerf_check)
+        # option_layout.addWidget(QLabel("Kerf"))
+        # option_layout.addWidget(self.kerf_value)
+        # option_layout.addSpacing(20)
+        # option_layout.addWidget(QLabel("Algorithm"))
+        # option_layout.addWidget(self.algorithm)
 
-        option_group.setLayout(option_layout)
+        # option_group.setLayout(option_layout)
 
         # --- PREVIEW TABLE GROUP---
         preview_group = QGroupBox("CSV Preview")
-        preview_layout = QVBoxLayout()
+        preview_layout = QHBoxLayout()
 
-        self.preview_table = QTableWidget()
-        
-        preview_layout.addWidget(self.preview_table)
+        self.preview_table_stock = QTableWidget()
+        self.preview_table_demand = QTableWidget()
+                
+        preview_layout.addWidget(self.preview_table_stock)
+        preview_layout.addWidget(self.preview_table_demand)
         preview_group.setLayout(preview_layout)
 
         # --- SOLVE BUTTON ---
@@ -110,12 +121,16 @@ class Forge1DTab(QWidget):
         self.log_view = QTextEdit()
         self.log_view.setReadOnly(True)
 
+        self.log_view.verticalScrollBar().setValue(
+            self.log_view.verticalScrollBar().maximum()
+        )
+
         log_layout.addWidget(self.log_view)
         log_group.setLayout(log_layout)
 
         # --- ADD TO MAIN LAYOUT
         layout.addWidget(input_group)
-        layout.addWidget(option_group)
+        # layout.addWidget(option_group)
         layout.addWidget(preview_group)
         layout.addWidget(self.solve_button)
         layout.addWidget(summary_group)
@@ -130,27 +145,38 @@ class Forge1DTab(QWidget):
 
         if path:
             self.stock_path.setText(path)
-            self.load_csv_preview(path)
+            self.load_csv_preview(self.preview_table_stock, path)
 
     def browse_demand(self):
         path, _ = QFileDialog.getOpenFileName(self, "Select Demand CSV")
 
         if path:
             self.demand_path.setText(path)
-            self.load_csv_preview(path)
+            self.load_csv_preview(self.preview_table_demand, path)
 
-    def load_csv_preview(self, path):
-        df = pd.read_csv(path)
+    def load_csv_preview(self, table_widget, path):
+        try:
+            df = pd.read_csv(path)
+        except Exception as e:
+            self.logger.error("Preview error: %s,", e)
+            return
 
-        self.preview_table.setRowCount(len(df))
-        self.preview_table.setColumnCount(len(df.columns))
-        self.preview_table.setHorizontalHeaderLabels(df.columns)
+        df = df.head(50)
 
-        for i in range(len(df)):
-            for j in range(len(df.columns)):
-                self.preview_table.setItem(
-                    i,
-                    j,
-                    QTableWidgetItem(str(df.iloc[i, j]))
+        table_widget.setRowCount(len(df))
+        table_widget.setColumnCount(len(df.columns))
+        table_widget.setHorizontalHeaderLabels(df.columns)
+
+        for row in range(len(df)):
+            for col in range(len(df.columns)):
+                value = str(df.iloc[row, col])
+                table_widget.setItem(
+                    row,
+                    col,
+                    QTableWidgetItem(value)
             )
+
+        self.logger.info("%d item is loaded from %s,", len(df), path)
+        
+        table_widget.resizeColumnsToContents()
         

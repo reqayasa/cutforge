@@ -1,11 +1,14 @@
+import logging
 from core.csv_loader import Forge1DCSVLoader
 from solver.forge1d_ffd_solver import Forge1DFFDSolver
 from core.result_exporter import Forge1DResultExporter
-from core.logger import log
+from core.logger import CutForgeLogger
 
 class SolverController:
     def __init__(self, window):
         self.window = window
+
+        self.logger = logging.getLogger("cutforge")
 
         self.loader = Forge1DCSVLoader()
         self.solver = Forge1DFFDSolver()
@@ -24,21 +27,21 @@ class SolverController:
         demand_path = tab.demand_path.text()
         algorithm  = tab.algorithm.currentText()
 
-        log(self, "Loading CSV...")
+        self.logger.info("Loading CSV...")
 
         try:
             dataset = self.loader.load(stock_path, demand_path)
         except Exception as e:
-            log(self, f"ERROR Loading CSV: {e}")
+            self.logger.error("Loading CSV error: %s", e)
             return
         
         try:
             patterns =self.run_solver(dataset, algorithm)
         except Exception as e:
-            log(self, f"Solver error: {e}")
+            self.logger.error("Solver error: %s", e)
             return
         
-        log(self, "Exporting results...")
+        self.logger.info("Exporting results...")
 
         try:
             output_folder = self.exporter.export(
@@ -49,11 +52,11 @@ class SolverController:
                 demand_path,
             )
         except Exception as e:
-            log(self, "Export error: {e}")
+            self.logger.error("Export error: %s", e)
             return
         
         self.update_summary(patterns)
-        log(self, f"Done. Output saved to: {output_folder}")
+        self.logger.info("Done. Output saved to: %s", output_folder)
 
     def run_solver(self, dataset, algorithm):
         if algorithm == "FFD":

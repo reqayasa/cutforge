@@ -8,7 +8,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Cut Forge")
-        self.resize(900, 600)
+        self.resize(700, 700)
 
         self.tabs = QTabWidget()
 
