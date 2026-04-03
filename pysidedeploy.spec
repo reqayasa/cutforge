@@ -16,7 +16,7 @@ exec_directory = ./dist
 project_file = 
 
 # application icon
-icon = /home/reqayasateknik/dev/cutforge/.venv/lib/python3.12/site-packages/PySide6/scripts/deploy_lib/pyside_icon.jpg
+icon = ./assets/icon.ico
 
 [files]
 extra_files = ./data/input
@@ -24,7 +24,7 @@ extra_files = ./data/input
 [python]
 
 # python path
-python_path = /home/reqayasateknik/dev/cutforge/.venv/bin/python3
+python_path = C:\Users\rizqi\Documents\Dev\cutforge\.venv\Scripts\python.exe
 
 # python packages to install
 packages = Nuitka==2.7.11
@@ -43,7 +43,7 @@ qml_files =
 excluded_qml_plugins = 
 
 # qt modules used. comma separated
-modules = Core,DBus,Gui,Widgets
+modules = Core,Gui,Widgets
 
 # qt plugins used by the application. only relevant for desktop deployment
 # for qt plugins used in android application see [android][plugins]
