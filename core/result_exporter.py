@@ -33,7 +33,7 @@ class Forge1DResultExporter:
         return folder
     
     def export_patterns(self, path, patterns, dataset):
-        scale = dataset.scale
+        scale = dataset[2]
 
         with open(path, "w", newline="") as f:
             writer = csv.writer(f)
@@ -45,7 +45,7 @@ class Forge1DResultExporter:
             ])
 
             for i, p in enumerate(patterns, start=1):
-                parts_real = [x / scale for x in p.parts]
+                parts_real = [x[1] / scale for x in p.parts]
 
                 used = p.used_length() / scale
                 waste = p.remaining() / scale

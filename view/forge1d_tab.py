@@ -89,7 +89,7 @@ class Forge1DTab(QWidget):
         preview_group.setLayout(preview_layout)
 
         # --- SOLVE BUTTON ---
-        self.solve_button = QPushButton("Solve")
+        self.solve_button = QPushButton("Solve") # Connect to solver_controller.py
 
         # --- RESULT SUMMARY GROUP ---
         summary_group = QGroupBox("Result Summary")

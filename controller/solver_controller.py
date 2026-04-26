@@ -1,6 +1,6 @@
 import logging
-from core.csv_loader import Forge1DCSVLoader
-from solver.forge1d_ffd_solver import Forge1DFFDSolver
+from core.csv_loader import CSV_Loader
+from solver.forge1d_solver import Solver1D
 from core.result_exporter import Forge1DResultExporter
 from core.logger import CutForgeLogger
 
@@ -10,8 +10,8 @@ class SolverController:
 
         self.logger = logging.getLogger("cutforge")
 
-        self.loader = Forge1DCSVLoader()
-        self.solver = Forge1DFFDSolver()
+        self.loader = CSV_Loader()
+        self.solver = Solver1D()
         self.exporter = Forge1DResultExporter()
 
         self.connect_events()
@@ -36,9 +36,9 @@ class SolverController:
             return
         
         try:
-            patterns =self.run_solver(dataset, algorithm)
+            patterns = self.run_solver(dataset, algorithm)
         except Exception as e:
-            self.logger.error("Solver error: %s", e)
+            self.logger.error("Solver error %s", e)
             return
         
         self.logger.info("Exporting results...")
