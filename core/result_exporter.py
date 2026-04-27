@@ -38,22 +38,22 @@ class Forge1DResultExporter:
         with open(path, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow([
-                "pattern_id",
+                "stock_id",
+                "stock_length",
                 "parts",
-                "used_length",
                 "waste"
             ])
 
-            for i, p in enumerate(patterns, start=1):
-                parts_real = [x[1] / scale for x in p.parts]
+            for _, p in enumerate(patterns):
+                part_real = [x[1] / scale for x in p.parts]
+                stock_real = p.stock_length / scale
 
-                used = p.used_length() / scale
                 waste = p.remaining() / scale
 
                 writer.writerow([
-                    i,
-                    "|".join(map(str, parts_real)),
-                    used,
+                    p.stock_id,
+                    stock_real,
+                    "|".join(map(str, part_real)),
                     waste
                 ])
 

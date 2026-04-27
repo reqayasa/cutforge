@@ -38,7 +38,7 @@ class SolverController:
         try:
             patterns = self.run_solver(dataset, algorithm)
         except Exception as e:
-            self.logger.error("Solver error %s", e)
+            self.logger.error("Solver error: %s", e)
             return
         
         self.logger.info("Exporting results...")

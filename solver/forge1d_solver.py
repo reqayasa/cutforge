@@ -40,7 +40,7 @@ class Solver1D:
                 
                 if not placed:
                     raise ValueError(
-                        "Cannot place part {part.id} (length={part.length})"
+                        f"Cannot place part {part.id} (length={part.length})"
                     )
                 
         for p in patterns:
