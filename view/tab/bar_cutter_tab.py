@@ -13,12 +13,16 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QFileDialog,
     QTextEdit,
+    QTableView,
 )
 from PySide6.QtCore import Qt, Signal
+
+from view.qt_model.table_model import StockReportTableModel, UnmetReportTableModel
 
 
 class BarCutterTab(QWidget):
     file_selected = Signal(str, str)
+    solve_requested = Signal()
 
     DEFAULT_STOCK_PATH = "data/input/bar_stocks.csv"
     DEFAULT_DEMAND_PATH = "data/input/bar_demands.csv"
@@ -55,11 +59,13 @@ class BarCutterTab(QWidget):
     
     def _connect_signal(self):
         self._demand_browse_btn.clicked.connect(
-            lambda: self._browse_file("Demand CSV", self._demand_input))
-        
+            lambda: self._browse_file("Demand CSV", self._demand_input, self.INPUT_DEMAND)
+        )
+
         self._stock_browse_btn.clicked.connect(
-            lambda: self._browse_file("Stock CSV", self._stock_input))
-        
+            lambda: self._browse_file("Stock CSV", self._stock_input, self.INPUT_STOCK)
+        )
+
         self._reload_btn.clicked.connect(
             lambda: ...
         )
@@ -73,8 +79,10 @@ class BarCutterTab(QWidget):
         )
 
         self._solve_btn.clicked.connect(
-            lambda: ...
+            self.solve_requested.emit
         )
+    
+    # UI Component
 
     def _input_group(self, title) -> QGroupBox:
         group_box = QGroupBox(title)
@@ -140,28 +148,39 @@ class BarCutterTab(QWidget):
     
     def _output_preview_group(self, title) -> QGroupBox:
         group_box = QGroupBox(title)
-        layout = QGridLayout()
+        layout = QHBoxLayout()
+        self._stock_table = QTableView()
+        self._unmet_table = QTableView()
 
-        output_preview = QTextEdit()
-        output_preview.setReadOnly(True)
-
-        layout.addWidget(output_preview)
+        layout.addWidget(self._stock_table)
+        layout.addWidget(self._unmet_table)
         
         group_box.setLayout(layout)
         return group_box
     
-    def _browse_file(self, title: str, widget: QLineEdit):
+    # UI Methode
+    
+    def _browse_file(self, title: str, widget: QLineEdit, input_type):
         path, _ = QFileDialog.getOpenFileName(self, title, "", "CSV Files (*.csv)")
 
         if path:
             widget.setText(path)
-            self.file_selected.emit(title, path)
+            self.file_selected.emit(input_type, path)
 
-    def update_input_preview(self, title: str, headers: Sequence[str], rows: Sequence[Sequence[str]]):
-        widget = self._preview_widgets.get(title)
+    def update_output_preview(self, report):
+        self._stock_table.setModel(
+            StockReportTableModel(report.stock_rows)
+        )
+
+        self._unmet_table.setModel(
+            UnmetReportTableModel(report.unmet_rows)
+        )
+
+    def update_input_preview(self, input_type: str, headers: Sequence[str], rows: Sequence[Sequence[str]]):
+        widget = self._preview_widgets.get(input_type)
 
         if widget is None:
-            raise ValueError(f"Unknown preview title: {title!r}")
+            raise ValueError(f"Unknown preview input_type: {input_type!r}")
         
         if not rows:
             widget.setRowCount(0)
@@ -172,10 +191,15 @@ class BarCutterTab(QWidget):
         widget.setColumnCount(len(headers))
         widget.setHorizontalHeaderLabels(headers)
 
-        for r, _ in enumerate(rows):
-            for c, _ in enumerate(headers):
-                value = rows[r][c]
-                widget.setItem(r, c, QTableWidgetItem(value))
+        for row_index, row in enumerate(rows):
+            for col_index, header in enumerate(headers):
+                value = row.get(header, "")
+                widget.setItem(row_index, col_index, QTableWidgetItem(value))
         
         widget.resizeColumnsToContents()
-
+    
+    def get_setting(self):
+        return {
+            "kerf": self._kerf.text(),
+            "precision": self._precision.text()
+        }

@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QMainWindow, QTabWidget
 
-from view.bar_cutter_tab import BarCutterTab
+from view.tab.bar_cutter_tab import BarCutterTab
 
 class MainWindow(QMainWindow):
     def __init__(self, tabs):

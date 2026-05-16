@@ -1,2 +1,3 @@
 from .main_window import MainWindow
-from .bar_cutter_tab import BarCutterTab
+from .tab.bar_cutter_tab import BarCutterTab
+from .qt_model.table_model import StockReportTableModel, UnmetReportTableModel
