@@ -1,21 +1,17 @@
 from PySide6.QtWidgets import QMainWindow, QTabWidget
 
-from view.forge1d_tab import Forge1DTab
-from view.forge2d_tab import Forge2DTab
+from view.bar_cutter_tab import BarCutterTab
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, tabs):
         super().__init__()
 
         self.setWindowTitle("Cut Forge")
         self.resize(700, 700)
 
-        self.tabs = QTabWidget()
+        tab_widget = QTabWidget()
 
-        self.forge1d_tab = Forge1DTab()
-        self.forge2d_tab = Forge2DTab()
+        for title, widget in tabs:
+            tab_widget.addTab(widget, title)
 
-        self.tabs.addTab(self.forge1d_tab, "Forge 1D")
-        self.tabs.addTab(self.forge2d_tab, "Forge 2D")
-
-        self.setCentralWidget(self.tabs)
+        self.setCentralWidget(tab_widget)

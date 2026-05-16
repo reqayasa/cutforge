@@ -1,26 +1,33 @@
 import sys
 from PySide6.QtWidgets import QApplication
-
-from view.main_window import MainWindow
-from controller.solver_controller import SolverController
-from core.logger import CutForgeLogger
-from core.setup import setup_environment
+from view import MainWindow, BarCutterTab
+from controller import BarCutterController
+from service.cut_service import CutService
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    logger_obj = CutForgeLogger()
-    logger = logger_obj.get_logger()
+    # logger_obj = CutForgeLogger()
+    # logger = logger_obj.get_logger()
 
-    window = MainWindow()
-    controller = SolverController(window)
+    bar_cutter_tab = BarCutterTab()
 
-    logger_obj.qt_handler.log_signal.connect(
-        window.forge1d_tab.log_view.append
-    )
+    cut_service = CutService()
 
-    setup_environment()
+    bar_cutter_controller = BarCutterController(bar_cutter_tab, cut_service)
+
+    window = MainWindow([
+        ("Bar Cutter", bar_cutter_tab)
+    ])
+
+    # controller = SolverController(window)
+
+    # logger_obj.qt_handler.log_signal.connect(
+    #     window.forge1d_tab.log_view.append
+    # )
+
+    # setup_environment()
     
     window.show()
 
