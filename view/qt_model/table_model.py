@@ -1,4 +1,6 @@
 from PySide6.QtCore import Qt, QAbstractTableModel
+from service.denormalization import denormalize_length
+
 
 class StockReportTableModel(QAbstractTableModel):
 
@@ -12,9 +14,10 @@ class StockReportTableModel(QAbstractTableModel):
         "Cuts",
     ]
 
-    def __init__(self, rows):
+    def __init__(self, rows, unit_scale):
         super().__init__()
         self._rows = rows
+        self._unit_scale = unit_scale
 
     def rowCount(self, parent=None):
         return len(self._rows)
@@ -40,13 +43,17 @@ class StockReportTableModel(QAbstractTableModel):
 
         row = self._rows[index.row()]
         col = index.column()
+        cutlist = []
+
+        for cut in row.cuts:
+            cutlist.append(denormalize_length(cut.length, self._unit_scale))
 
         values = [
             row.usage_id,
             row.group,
             row.stock_id,
-            row.stock_length,
-            row.used_length,
+            denormalize_length(row.stock_length, self._unit_scale),
+            denormalize_length(row.used_length, self._unit_scale),
             row.waste,
             row.cuts,
         ]
@@ -62,9 +69,10 @@ class UnmetReportTableModel(QAbstractTableModel):
         "Quantity",
     ]
 
-    def __init__(self, rows):
+    def __init__(self, rows, unit_scale):
         super().__init__()
         self._rows = rows
+        self._unit_scale = unit_scale
 
     def rowCount(self, parent=None):
         return len(self._rows)
@@ -94,7 +102,7 @@ class UnmetReportTableModel(QAbstractTableModel):
         values = [
             row.group,
             row.demand_id,
-            row.length,
+            denormalize_length(row.length, self._unit_scale),
             row.quantity,
         ]
 

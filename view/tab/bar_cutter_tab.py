@@ -200,11 +200,11 @@ class BarCutterTab(QWidget):
     
     def update_output_preview(self, report):
         self._stock_table.setModel(
-            StockReportTableModel(report.usages)
+            StockReportTableModel(report.usages, report.unit_scale)
         )
 
         self._unmet_table.setModel(
-            UnmetReportTableModel(report.unmet_rows)
+            UnmetReportTableModel(report.unmet_rows, report.unit_scale)
         )
 
     def get_setting(self):
