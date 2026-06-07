@@ -3,12 +3,13 @@ from PySide6.QtCore import Qt, QAbstractTableModel
 class StockReportTableModel(QAbstractTableModel):
 
     HEADERS = [
+        "ID",
         "Group",
         "Stock ID",
         "Stock Length",
         "Used Length",
         "Waste",
-        "Cut Count",
+        "Cuts",
     ]
 
     def __init__(self, rows):
@@ -41,12 +42,13 @@ class StockReportTableModel(QAbstractTableModel):
         col = index.column()
 
         values = [
+            row.usage_id,
             row.group,
             row.stock_id,
             row.stock_length,
             row.used_length,
             row.waste,
-            row.cut_count,
+            row.cuts,
         ]
 
         return str(values[col])

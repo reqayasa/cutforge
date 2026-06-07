@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class CutAssignment:
+class CutPiece:
     demand_id: str
     length: int
 
@@ -10,7 +10,7 @@ class CutAssignment:
 class StockUsage:
     stock_id: str
     stock_length: int
-    cuts: list[CutAssignment]
+    cuts: list[CutPiece]
     waste: int
 
 @dataclass(frozen=True)
@@ -28,3 +28,5 @@ class GroupSolveResult:
 @dataclass(frozen=True)
 class SolveResult:
     groups: list[GroupSolveResult]
+    kerf: int = 0
+    unit_scale: int = 0

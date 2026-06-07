@@ -15,6 +15,7 @@ class TestSolverAdapter(unittest.TestCase):
             demands=[],
             stocks=[],
             kerf=0,
+            unit_scale=0,
         )
 
         g2 = GroupInput(
@@ -22,6 +23,7 @@ class TestSolverAdapter(unittest.TestCase):
             demands=[],
             stocks=[],
             kerf=0,
+            unit_scale=0,
         )
 
         mock_solve_group.side_effect = [

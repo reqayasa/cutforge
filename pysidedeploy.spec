@@ -23,8 +23,8 @@ extra_files = ./data/input
 
 [python]
 
-# python path
-python_path = C:\Users\rizqi\Documents\Dev\cutforge\.venv\Scripts\python.exe
+# python path (leave empty to use current environment)
+python_path = /home/reqayasa/Documents/dev/cutforge/.venv/bin/python3
 
 # python packages to install
 packages = Nuitka==2.7.11
@@ -43,7 +43,7 @@ qml_files =
 excluded_qml_plugins = 
 
 # qt modules used. comma separated
-modules = Core,Gui,Widgets
+modules = Core,DBus,Gui,Widgets
 
 # qt plugins used by the application. only relevant for desktop deployment
 # for qt plugins used in android application see [android][plugins]
@@ -72,7 +72,7 @@ macos.permissions =
 mode = standalone
 
 # specify any extra nuitka arguments
-extra_args = --quiet --noinclude-qt-translations --jobs=2 --include-package=pandas --include-package=pandas._libs --include-package=numpy --nofollow-import-to=*.tests --nofollow-import-to=*.conftest --nofollow-import-to=doctest --nofollow-import-to=unittest --nofollow-import-to=pydoc --nofollow-import-to=setuptools
+extra_args = --quiet --noinclude-qt-translations --jobs=2 --nofollow-import-to=*.tests --nofollow-import-to=*.conftest --nofollow-import-to=doctest --nofollow-import-to=unittest --nofollow-import-to=pydoc --nofollow-import-to=setuptools
 
 [buildozer]
 

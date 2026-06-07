@@ -28,6 +28,7 @@ class GroupInput:
     demands: list[DemandItem]
     stocks: list[StockItem]
     kerf: int
+    unit_scale: int
 
 @dataclass(frozen=True)
 class NormalizeOptions:

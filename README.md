@@ -81,6 +81,53 @@ git push -u origin main
 ```
 
 ## Build Application (PySide6 Deploy)
+
+### Requirements
+- **Python 3.9+** (tested with 3.12)
+- Virtual environment activated (with requirements.txt installed)
+- **Windows/Linux** - builds work cross-platform
+- ~2 GB disk space for build output
+
+Required packages (in `requirements.txt`):
+- `PySide6==6.10.2`
+- `PySide6_Essentials==6.10.2`
+- `shiboken6==6.10.2`
+- `Nuitka==2.7.11` (installed automatically by pyside6-deploy)
+
+### Build Instructions
+
+The build configuration is in `pysidedeploy.spec`. You can build in two modes:
+
+#### Option 1: Standalone (Recommended - Default)
+Creates a self-contained folder with all dependencies. Larger but more portable.
+
 ```bash
 pyside6-deploy -c pysidedeploy.spec
 ```
+
+Output location: `./dist/cutforge/`
+- Platform: Windows → `cutforge.exe`
+- Platform: Linux → `cutforge` (executable)
+
+#### Option 2: One-File Executable
+Creates a single `.exe` (Windows) or binary (Linux). Slower startup, smaller on disk.
+
+First, update `pysidedeploy.spec`:
+```ini
+[nuitka]
+mode = onefile
+```
+
+Then build:
+```bash
+pyside6-deploy -c pysidedeploy.spec
+```
+
+Output location: `./dist/cutforge` (single executable file)
+
+### Build Notes
+- First build takes longer (~5-10 min depending on system)
+- Subsequent builds are faster due to caching
+- Build produces optimized, compressed binary using Nuitka
+- Qt translations are excluded for minimal size (~150 MB standalone)
+- The `./data/input` folder is automatically included in the build

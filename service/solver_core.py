@@ -1,5 +1,5 @@
 from model.internal_model import GroupInput
-from model.solver_model import GroupSolveResult, StockUsage, UnmetDemand, CutAssignment
+from model.solver_model import GroupSolveResult, StockUsage, UnmetDemand, CutPiece
 
 def solve_group(group: GroupInput) -> GroupSolveResult:
     # expand demand
@@ -26,7 +26,7 @@ def solve_group(group: GroupInput) -> GroupSolveResult:
         is_assigned = False
         for stock in prepare_usages:
             if demand[1] + group.kerf <= stock[3]: # check stock waste
-                cut_assignment = CutAssignment(demand_id=demand[0], length=demand[1])
+                cut_assignment = CutPiece(demand_id=demand[0], length=demand[1])
                 stock[2].append(cut_assignment) # append to stock cuts
                 stock[3] = stock[3] - demand[1] - group.kerf # calculate waste
                 is_assigned = True
@@ -37,7 +37,7 @@ def solve_group(group: GroupInput) -> GroupSolveResult:
 
         for i, stock in enumerate(expanded_stocks):
             if demand[1] <= stock[1]:
-                cut_assignment = CutAssignment(demand_id=demand[0], length=demand[1])
+                cut_assignment = CutPiece(demand_id=demand[0], length=demand[1])
                 prepare_usages.append([
                     stock[0], # stock id
                     stock[1], # stock length

@@ -16,6 +16,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s1", "A", 500, 1),
             ],
             kerf=0,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -40,6 +41,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s1", "A", 500, 1),
             ],
             kerf=0,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -58,6 +60,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s1", "A", 400, 1),
             ],
             kerf=0,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -76,6 +79,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s1", "A", 205, 1),
             ],
             kerf=10,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -90,6 +94,7 @@ class TestSolverCore(unittest.TestCase):
             demands=[],
             stocks=[],
             kerf=0,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -108,6 +113,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s1", "A", 150, 1),
             ],
             kerf=10,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -125,6 +131,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s1", "A", 210, 1),
             ],
             kerf=10,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -143,6 +150,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s1", "A", 100, 1),
             ],
             kerf=0,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -161,6 +169,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s1", "A", 100, 2),
             ],
             kerf=0,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -178,6 +187,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s1", "A", 320, 1),
             ],
             kerf=10,
+            unit_scale=0,
         )
 
         result = solve_group(group)
@@ -197,6 +207,7 @@ class TestSolverCore(unittest.TestCase):
                 StockItem("s2", "A", 300, 1),
             ],
             kerf=0,
+            unit_scale=0,
         )
 
         result = solve_group(group)

@@ -7,7 +7,7 @@ from model.internal_model import NormalizeOptions, SolveOptions
 from model.report_model import SolveReport
 
 
-def test_cut_sercice_return_report():
+def test_cut_service_return_report():
     service = CutService()
 
     demands = [
@@ -38,16 +38,16 @@ def test_cut_sercice_return_report():
 
     assert isinstance(report, SolveReport)
 
-    assert len(report.stock_rows) == 1
+    assert len(report.usages) == 1
     assert len(report.unmet_rows) == 0
 
-    row = report.stock_rows[0]
+    row = report.usages[0]
 
     assert row.group == "A"
     assert row.stock_id == "S1"
     assert row.stock_length == 3000
     assert row.used_length == 2000
-    assert row.cut_count == 2
+    assert len(row.cuts) == 2
 
 def test_cut_service_creates_unmet_report():
     service = CutService()
@@ -77,7 +77,7 @@ def test_cut_service_creates_unmet_report():
         solve_options=SolveOptions(),
     )
 
-    assert len(report.stock_rows) == 0
+    assert len(report.usages) == 0
     assert len(report.unmet_rows) == 1
 
     unmet = report.unmet_rows[0]
@@ -127,9 +127,9 @@ def test_cut_service_solves_multiple_groups():
         solve_options=SolveOptions(),
     )
 
-    assert len(report.stock_rows) == 2
+    assert len(report.usages) == 2
 
-    groups = {row.group for row in report.stock_rows}
+    groups = {row.group for row in report.usages}
 
     assert groups == {"A", "B"}
 
@@ -143,5 +143,5 @@ def test_cut_service_handles_empty_input():
         solve_options=SolveOptions(),
     )
 
-    assert len(report.stock_rows) == 0
+    assert len(report.usages) == 0
     assert len(report.unmet_rows) == 0

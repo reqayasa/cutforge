@@ -18,14 +18,17 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal
 
 from view.qt_model.table_model import StockReportTableModel, UnmetReportTableModel
+from view.qt_model.editor_model import CsvTableModel
 
 
 class BarCutterTab(QWidget):
     file_selected = Signal(str, str)
     solve_requested = Signal()
+    reload_requested = Signal()
+    export_requested = Signal()
 
-    DEFAULT_STOCK_PATH = "data/input/bar_stocks.csv"
-    DEFAULT_DEMAND_PATH = "data/input/bar_demands.csv"
+    DEFAULT_STOCK_PATH = "data/input/test_stock.csv"
+    DEFAULT_DEMAND_PATH = "data/input/test_demand.csv"
 
     INPUT_DEMAND = "demand"
     INPUT_STOCK = "stock"
@@ -67,7 +70,7 @@ class BarCutterTab(QWidget):
         )
 
         self._reload_btn.clicked.connect(
-            lambda: ...
+            self.reload_requested.emit
         )
 
         self._edit_btn.clicked.connect(
@@ -80,6 +83,10 @@ class BarCutterTab(QWidget):
 
         self._solve_btn.clicked.connect(
             self.solve_requested.emit
+        )
+
+        self._export_btn.clicked.connect(
+            self.export_requested.emit
         )
     
     # UI Component
@@ -119,8 +126,8 @@ class BarCutterTab(QWidget):
         control_btn_layout.addWidget(self._save_btn)
 
         
-        self._demand_preview_table = QTableWidget()
-        self._stock_preview_table = QTableWidget()
+        self._demand_preview_table = QTableView()
+        self._stock_preview_table = QTableView()
         control_btn_layout.addStretch()
 
         layout.addWidget(self._demand_preview_table, 1)
@@ -149,16 +156,25 @@ class BarCutterTab(QWidget):
     def _output_preview_group(self, title) -> QGroupBox:
         group_box = QGroupBox(title)
         layout = QHBoxLayout()
+        table_layout = QVBoxLayout()
+        control_btn_layout = QVBoxLayout()
+
+        self._export_btn = QPushButton("Export")
+
+        control_btn_layout.addWidget(self._export_btn)
+        
         self._stock_table = QTableView()
         self._unmet_table = QTableView()
 
-        layout.addWidget(self._stock_table)
-        layout.addWidget(self._unmet_table)
+        table_layout.addWidget(self._stock_table)
+        table_layout.addWidget(self._unmet_table)
+        layout.addLayout(table_layout)
+        layout.addLayout(control_btn_layout)
         
         group_box.setLayout(layout)
         return group_box
     
-    # UI Methode
+    # Private Method
     
     def _browse_file(self, title: str, widget: QLineEdit, input_type):
         path, _ = QFileDialog.getOpenFileName(self, title, "", "CSV Files (*.csv)")
@@ -167,39 +183,39 @@ class BarCutterTab(QWidget):
             widget.setText(path)
             self.file_selected.emit(input_type, path)
 
+    # Public Method
+
+    def update_input_preview(self, input_type: str, headers: Sequence[str], rows: Sequence[Sequence[str]]):
+        widget = self._preview_widgets.get(input_type)
+
+        if input_type == self.INPUT_DEMAND:
+            self._demand_preview_table.setModel(
+                CsvTableModel(headers=headers, rows=rows)
+            )
+        
+        if input_type == self.INPUT_STOCK:
+            self._stock_preview_table.setModel(
+                CsvTableModel(headers=headers, rows=rows)
+            )
+    
     def update_output_preview(self, report):
         self._stock_table.setModel(
-            StockReportTableModel(report.stock_rows)
+            StockReportTableModel(report.usages)
         )
 
         self._unmet_table.setModel(
             UnmetReportTableModel(report.unmet_rows)
         )
 
-    def update_input_preview(self, input_type: str, headers: Sequence[str], rows: Sequence[Sequence[str]]):
-        widget = self._preview_widgets.get(input_type)
-
-        if widget is None:
-            raise ValueError(f"Unknown preview input_type: {input_type!r}")
-        
-        if not rows:
-            widget.setRowCount(0)
-            return
-
-
-        widget.setRowCount(len(rows))
-        widget.setColumnCount(len(headers))
-        widget.setHorizontalHeaderLabels(headers)
-
-        for row_index, row in enumerate(rows):
-            for col_index, header in enumerate(headers):
-                value = row.get(header, "")
-                widget.setItem(row_index, col_index, QTableWidgetItem(value))
-        
-        widget.resizeColumnsToContents()
-    
     def get_setting(self):
         return {
             "kerf": self._kerf.text(),
             "precision": self._precision.text()
         }
+    
+    def get_file_path(self):
+        return {
+            "demand_path": self._demand_input.text(),
+            "stock_path": self._stock_input.text()
+        }
+

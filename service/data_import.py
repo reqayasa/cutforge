@@ -1,7 +1,5 @@
 import csv
 
-from model.raw_input_model import RawDemandRow, RawStockRow
-
 DEMAND_HEADER_ALIASES = {
     "id": {
         "id",

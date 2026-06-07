@@ -26,10 +26,11 @@ def group_inputs(data: NormalizedInput) -> list[GroupInput]:
 
     return [
         GroupInput(
-            group   = group,
-            demands = demand_map[group],
-            stocks  = stock_map[group],
-            kerf    = data.kerf
+            group       = group,
+            demands     = demand_map[group],
+            stocks      = stock_map[group],
+            kerf        = data.kerf,
+            unit_scale  = data.unit_scale
         )
         for group in groups
     ]

@@ -1,4 +1,5 @@
 from service import read_csv, resolve_headers, parse_row
+from service.data_export import write_csv
 from model.raw_input_model import RawDemandRow, RawStockRow
 from model.internal_model import SolveOptions, NormalizeOptions
 
@@ -51,16 +52,19 @@ class BarCutterController():
 
         self._raw_demands: list[RawDemandRow] = []
         self._raw_stocks: list[RawStockRow] = []
+        self._solve_report = None
 
         self._view.file_selected.connect(self._on_file_selected)
         self._view.solve_requested.connect(self._on_solve_btn_clicked)
+        self._view.reload_requested.connect(self._on_reload_btn_clicked)
+        self._view.export_requested.connect(self._on_export_btn_clicked)
 
 
-    def read_data(self, path: str) :
+    def _read_data(self, path: str) :
         return read_csv(path)
 
     def _on_file_selected(self, input_type, path):
-        (headers, rows) = self.read_data(path)
+        (headers, rows) = self._read_data(path)
 
         mapping = resolve_headers(headers, self.HEADER_ALIASES)
 
@@ -74,7 +78,7 @@ class BarCutterController():
             self._raw_stocks = [
                 parse_row(row, mapping, RawStockRow)
                 for row in rows
-]
+            ]
 
         self._view.update_input_preview(input_type, headers=headers, rows=rows)
 
@@ -94,5 +98,31 @@ class BarCutterController():
             normalize_options = normalize_options,
             solve_options = solve_options
         )
+        self._solve_report = solve_report
 
         self._view.update_output_preview(solve_report)
+    
+    def _on_reload_btn_clicked(self):
+        path = self._view.get_file_path()
+
+        demand_data = self._read_data(path["demand_path"])
+        stock_data = self._read_data(path["stock_path"])
+
+        mapping_demand = resolve_headers(demand_data[0], self.HEADER_ALIASES)
+        mapping_stock = resolve_headers(stock_data[0], self.HEADER_ALIASES)
+
+        self._raw_demands = [
+            parse_row(row, mapping_demand, RawDemandRow)
+            for row in demand_data[1]
+        ]
+    
+        self._raw_stocks = [
+            parse_row(row, mapping_stock, RawStockRow)
+            for row in stock_data[1]
+        ]
+
+        self._view.update_input_preview("demand", headers=demand_data[0], rows=demand_data[1])
+        self._view.update_input_preview("stock", headers=stock_data[0], rows=stock_data[1])
+
+    def _on_export_btn_clicked(self):
+        write_csv(self._solve_report)
