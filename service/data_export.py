@@ -110,14 +110,14 @@ def export_prf(report: SolveReport, path):
             for pattern in patterns:
                 stock_len = denormalize_length(pattern['stock_length'], unit_scale)
                 count = pattern['count']
-                f.write(f"- {count} number of {stock_len}mm cut into:\n")
+                f.write(f"- {count} length of {stock_len:g} mm cut into:\n")
 
                 for demand_id, cut_count in pattern['demand_cuts'].items():
                     cut_len = denormalize_length(cut_count['length'], unit_scale)
-                    f.write(f"  > {cut_count['count']} x {cut_len}mm for {demand_id}\n")
+                    f.write(f"  > {cut_count['count']} x {cut_len:g} mm for {demand_id}\n")
 
                 waste = denormalize_length(pattern['waste_per_stock'], unit_scale)
-                f.write(f"  > balance {waste}mm waste\n")
+                f.write(f"  > balance {waste} mm \n")
 
                 total_stocks += count
                 total_stock_length += count * pattern['stock_length']
@@ -128,10 +128,10 @@ def export_prf(report: SolveReport, path):
 
             f.write(f"\nSummary:\n")
             f.write(f"  Total stocks: {total_stocks}\n")
-            f.write(f"  Total length: {denormalize_length(total_stock_length, unit_scale)}mm\n")
-            f.write(f"  Total used: {denormalize_length(total_used, unit_scale)}mm\n")
-            f.write(f"  Total waste: {denormalize_length(total_waste, unit_scale)}mm\n")
-            f.write(f"  Utilization: {utilization:.1f}%\n")
+            f.write(f"  Total length: {denormalize_length(total_stock_length, unit_scale):g} mm\n")
+            f.write(f"  Total used: {denormalize_length(total_used, unit_scale):g} mm\n")
+            f.write(f"  Total waste: {denormalize_length(total_waste, unit_scale):g} mm\n")
+            f.write(f"  Utilization: {utilization:.1f} %\n")
             f.write("\n")
 
 

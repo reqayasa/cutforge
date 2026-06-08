@@ -80,6 +80,9 @@ git commit -m "message"
 git push -u origin main
 ```
 
+## Git Workflow
+See [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) for the branching and commit conventions used in this project.
+
 ## Build Application (PySide6 Deploy)
 
 ### Requirements
