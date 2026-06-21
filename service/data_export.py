@@ -114,10 +114,10 @@ def export_prf(report: SolveReport, path):
 
                 for demand_id, cut_count in pattern['demand_cuts'].items():
                     cut_len = denormalize_length(cut_count['length'], unit_scale)
-                    f.write(f"  > {cut_count['count']} x {cut_len:g} mm for {demand_id}\n")
+                    f.write(f"  > {cut_count['count']/count:g} x {cut_len:g} mm ({cut_count['count']} nos {demand_id})\n")
 
                 waste = denormalize_length(pattern['waste_per_stock'], unit_scale)
-                f.write(f"  > balance {waste} mm \n")
+                f.write(f"  > balance {waste} mm ({count} nos)\n")
 
                 total_stocks += count
                 total_stock_length += count * pattern['stock_length']
