@@ -1,12 +1,14 @@
 import sys
 from PySide6.QtWidgets import QApplication
 from view import MainWindow, BarCutterTab
+from view.style import button
 from controller import BarCutterController
 from service.cut_service import CutService
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyle(button.GlobalButtonCursorStyle())
 
     # logger_obj = CutForgeLogger()
     # logger = logger_obj.get_logger()
